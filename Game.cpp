@@ -13,23 +13,21 @@ void Game::initRenderWindow()
 {
 	std::string title = "Empty title";
 	sf::VideoMode window_bounds(800, 600);
-
 	unsigned framePerSecond = 120;
 	bool verticalSyncEnabled = 0;
 
 	fstream fs("Config/window.ini");
 
-	if (fs.is_open()) 
-	{
+	if (fs.is_open()) {
 		getline(fs, title);
-
-		fs >> window_bounds.width >> window_bounds.height >> framePerSecond >> verticalSyncEnabled;
+		fs >> window_bounds.width >> window_bounds.height;
+		fs >> framePerSecond;
+		fs >> verticalSyncEnabled;
 	}
 
 	fs.close();
 
 	this->window = new sf::RenderWindow(window_bounds, title);
-
 	this->window->setFramerateLimit(framePerSecond);
 	this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
@@ -41,6 +39,7 @@ void Game::initStates()
 
 Game::Game()
 {
+
 	initRenderWindow();
 	initStates();
 }
