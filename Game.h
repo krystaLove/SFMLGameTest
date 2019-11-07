@@ -1,11 +1,6 @@
 #pragma once
 
-#include "Player.h"
-#include "tileMap.h"
-
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/System.hpp>
+#include "GameState.h"
 
 class Game
 {
@@ -14,15 +9,15 @@ private:
 	sf::RenderWindow* window;
 	sf::Event event;
 	sf::Clock clock;
-	Player *hero;
-	TileMap *currentMap;
+
+	std::stack<State*> states;
 
 	float time;
 
 	//Initialization
 	void initRenderWindow();
-	void initTileMap();
-	void initHero();
+	void initStates();
+
 public:
 	//Constructors / Destructors
 	Game();
@@ -30,9 +25,18 @@ public:
 
 	//Functions
 	void update();
+
+	void endApplication();
+
+	//Render
 	void render();
+
+	//Core
 	void run();
+
 	void updateSFMLEvents();
+
+	//Updating delta time
 	void updateTime();
 };
 

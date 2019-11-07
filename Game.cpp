@@ -1,4 +1,5 @@
 #include "Game.h"
+
 #include "Player.h";
 #include "TileMap.h";
 
@@ -31,46 +32,59 @@ void Game::initRenderWindow()
 	this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
 
-void Game::initTileMap()
+void Game::initStates()
 {
-	this->currentMap = new TileMap;
-	this->currentMap->loadTileMap("maps/1.txt");
-	this->currentMap->loadTileSet("images/map.png");
-}
-
-void Game::initHero()
-{
-	this->hero = new Player("images/hero.png", 200, 200, 30, 60);
+	this->states.push(new GameState(this->window));
 }
 
 Game::Game()
 {
-	initHero();
-	initTileMap();
+
 	initRenderWindow();
+	initStates();
 }
 
 Game::~Game()
 {
 	delete this->window;
-	delete this->hero;
-	delete this->currentMap;
+
+	while (!this->states.empty()) {
+		delete(this->states.top());
+
+		this->states.pop();
+	}
 }
 
 void Game::update()
 {
 	this->updateSFMLEvents();
 	this->updateTime();
-	this->hero->update(this->time);
+
+	if (!this->states.empty()) {
+		this->states.top()->update(this->time);
+		if (this->states.top()->getQuit()) {
+			this->states.top()->endState();
+			delete this->states.top();
+			this->states.pop();
+		}
+	}
+	else {
+		this->endApplication();
+		this->window->close();
+	}
+}
+
+void Game::endApplication()
+{
+	std::cout << "Closing application!\n";
 }
 
 void Game::render()
 {
 	this->window->clear();
 
-	this->currentMap->renderMap(*this->window);
-	this->hero->render(*this->window);
-	
+	if (!this->states.empty())
+		this->states.top()->render();
 
 	this->window->display();
 }
