@@ -1,15 +1,21 @@
 #include "GameState.h"
+#include "AnimationManager.h"
 #include <iostream>
 
 GameState::GameState(sf::RenderWindow* window)
 	:State(window)
 {
-
+	this->animationManager = new AnimationManager();
 }
 
 GameState::~GameState()
 {
 
+}
+
+void GameState::initAnimationManager()
+{
+	this->animationManager->create();
 }
 
 void GameState::endState()
